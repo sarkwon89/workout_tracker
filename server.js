@@ -25,6 +25,9 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
 
 //Routes
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/index.html"));
+});
 
 
 //render exercise html page with this route so user can see that page when he or she clicks "new workout"
