@@ -33,10 +33,6 @@ const WorkoutSchema = new Schema({
         trim: true
     },
     exercises: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Workout"
-        }
       ]
 });
 

@@ -8,101 +8,84 @@ const PORT = process.env.PORT || 3000;
 const db = require("./models");
 
 const app = express();
-
-app.use(logger("dev"));
+// 
+// app.use(logger("dev"));
 
 app.use(express.urlencoded({
-    extended: true
+  extended: true
 }));
 app.use(express.json());
 
 app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
-    useNewUrlParser: true
+  useNewUrlParser: true
 });
 
 
 //Routes
 
+
+
 //render exercise html page with this route so user can see that page when he or she clicks "new workout"
 app.get("/exercise", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/exercise.html"));
+  res.sendFile(path.join(__dirname + "/public/exercise.html"));
 });
 
 //grab work ids
 app.get("/api/workouts", (req, res) => {
-    db.Workout.find({}).then(data => {
-        // console.log(data)
-        res.json(data)
-    })
+  db.Workout.find({}).then(data => {
+    // console.log(data)
+    res.json(data)
+  })
 
 })
 
 //route to update
 app.put("/api/workouts/:id", (req, res) => {
-    db.Workout.update(req.body, {
-        where: {
-            _id: req.params.id
-        }
-    }).then(data => res.json(data));
+  console.log(req.body);
+  db.Workout.findByIdAndUpdate(
+  req.params.id, {
+      $push: {
+      exercises: req.body
+  }
+  }).then(data => {
+    console.log(data);
+    res.json(data)
+  });
 })
 
 //route to create to post aka create an exercise
-app.post("/api/workouts", ({ body }, res) => {
-    db.Workout.create(body)
-      .then(({_id}) => db.Workout.findOneAndUpdate({}, { $push: { exercises: _id } }, { new: true }))
-      .then(data => {
-        res.json(data);
-      })
-      .catch(err => {
-        res.json(err);
-      });
-  });
+app.post("/api/workouts", ({
+  body
+}, res) => {
+  console.log(body);
+  db.Workout.create(body).then(data => {
+    //dostuff
+    res.json(data)
+  })
 
-
-// app.post("/api/workouts", (req, res) => {
-    
-//     console.log(req.body)
-
-//     db.Workout.create({}).then((data) => {
-
-//         console.log(data._id)
-
-//         db.Workout.findOneAndUpdate({
-//             where: {
-//                 _id: data._id
-//             }
-//         }, {
-//             $push: 
-//                 {exercises: req.body}
-//         }, {
-//             new: true
-//         });
-//         console.log(data)
-//         res.json(data)
-//     })
-// });
+})
 
 
 //render stats html page with this route so user can see that page when he or she clicks "new workout"
 app.get("/stats", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/stats.html"));
+  res.sendFile(path.join(__dirname + "/public/stats.html"));
 });
 
 //this route display 
 app.get("/api/workouts/range", (req, res) => {
-    db.Workout.find({})
-      .populate("Workout")
-      .then(data => {
-        res.json(data);
-      })
-      .catch(err => {
-        res.json(err);
-      });
-  });
+  db.Workout.find({})
+    // .populate("Workout")
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 
 
 app.listen(PORT, () => {
-    console.log(`App running on port http://localhost:${PORT}`);
+  console.log(`App running on port http://localhost:${PORT}`);
 });
