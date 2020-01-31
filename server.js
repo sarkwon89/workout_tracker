@@ -83,6 +83,17 @@ app.post("/api/workouts", ({ body }, res) => {
 // });
 
 
+//render stats html page with this route so user can see that page when he or she clicks "new workout"
+app.get("/stats", (req, res) => {
+    res.sendFile(path.join(__dirname + "/public/stats.html"));
+});
+
+//this route display 
+// app.get("/api/workouts/range", (req, res) => {
+
+// })
+
+
 app.listen(PORT, () => {
     console.log(`App running on port http://localhost:${PORT}`);
 });
