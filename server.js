@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 3000;
 const db = require("./models");
 
 const app = express();
-// 
-// app.use(logger("dev"));
+
+app.use(logger("dev"));
 
 app.use(express.urlencoded({
   extended: true
@@ -32,7 +32,7 @@ app.get("/exercise", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/exercise.html"));
 });
 
-//grab work ids
+//grab last workout
 app.get("/api/workouts", (req, res) => {
   db.Workout.find({}).then(data => {
     // console.log(data)
@@ -45,11 +45,13 @@ app.get("/api/workouts", (req, res) => {
 app.put("/api/workouts/:id", (req, res) => {
   console.log(req.body);
   db.Workout.findByIdAndUpdate(
-  req.params.id, {
+  req.params.id, 
+  {
       $push: {
       exercises: req.body
   }
-  }).then(data => {
+  }
+  ).then(data => {
     console.log(data);
     res.json(data)
   });
