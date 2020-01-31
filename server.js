@@ -61,7 +61,7 @@ app.put("/api/workouts/:id", (req, res) => {
 app.post("/api/workouts", ({
   body
 }, res) => {
-  console.log(body);
+  // console.log(body);
   db.Workout.create(body).then(data => {
     //dostuff
     res.json(data)
